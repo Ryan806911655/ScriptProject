@@ -41,7 +41,9 @@ if (-not $isAdmin) {
             $remoteUrl = "https://raw.githubusercontent.com/Ryan806911655/ScriptProject/main/安装ClaudeCode/install-claude-code.ps1"
             Write-Host "   正在准备提权..."
             try {
-                Invoke-RestMethod -Uri $remoteUrl -TimeoutSec 15 | Set-Content -Path $tempScript -Encoding UTF8
+                $scriptContent = Invoke-RestMethod -Uri $remoteUrl -TimeoutSec 15
+                # 用 .NET 写入 UTF-8 无 BOM（避免 Set-Content 加 BOM 导致 #Requires 报错）
+                [System.IO.File]::WriteAllText($tempScript, $scriptContent, (New-Object System.Text.UTF8Encoding $false))
                 Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
             }
             catch {
