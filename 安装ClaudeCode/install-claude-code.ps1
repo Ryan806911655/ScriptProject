@@ -36,14 +36,26 @@ if (-not $isAdmin) {
             # 本地文件执行：直接提权重新运行
             Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
         } else {
-            # 远程执行：把下载命令编码后传给提权窗口（避免写文件 + 编码问题）
+            # 远程执行：用纯 ASCII 启动器脚本 + iwr 重新下载（避开 irm 502 和 BOM 问题）
             $remoteUrl = "https://raw.githubusercontent.com/Ryan806911655/ScriptProject/main/安装ClaudeCode/install-claude-code.ps1"
+            $tempLauncher = "$env:TEMP\cc-install.ps1"
             Write-Host "   正在准备提权..."
             try {
-                $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes(
-                    "iex ((iwr '$remoteUrl' -UseBasicParsing).Content)"
-                ))
-                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded"
+                # 写入纯 ASCII 启动器（无 BOM、无中文、无编码坑）
+                $launcherCode = @"
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+`$url = '$remoteUrl'
+try {
+    `$s = (Invoke-WebRequest `$url -UseBasicParsing -TimeoutSec 30).Content
+    Invoke-Expression `$s
+} catch {
+    Write-Host "`$([char]0x26A0) Download failed: `$_"
+    Write-Host "URL: `$url"
+    Read-Host "Press Enter to close"
+}
+"@
+                [System.IO.File]::WriteAllText($tempLauncher, $launcherCode)
+                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempLauncher`""
             }
             catch {
                 Write-Host "   [失败] 提权失败: $_" -ForegroundColor Red
