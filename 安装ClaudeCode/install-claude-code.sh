@@ -202,7 +202,7 @@ else
 fi
 
 # ============================================================
-# 3. VS Code (仅 macOS)
+# 4. VS Code (仅 macOS)
 # ============================================================
 if [ "$OS" = "Darwin" ]; then
     echo ""
@@ -315,6 +315,12 @@ if [ "$CC_ALREADY_INSTALLED" = false ]; then
     echo "   [OK] Claude Code 安装完成"
     echo "   Claude Code 版本: $(claude --version 2>/dev/null || echo '请重启终端')"
 fi
+
+echo ""
+echo "$SEP1"
+echo " [安装完成!]"
+echo "$SEP1"
+echo "   Claude Code 版本: $(claude --version 2>/dev/null || echo '请重启终端')"
 
 # ============================================================
 # API 配置

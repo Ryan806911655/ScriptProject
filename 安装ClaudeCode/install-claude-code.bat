@@ -3,8 +3,8 @@ chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
 REM 分隔符（统一管理）
-set "SEP1==============================================="
-set "SEP2-----------------------------------------------"
+set "SEP1================================================="
+set "SEP2=-------------------------------------------------"
 
 title Claude Code 一键安装
 
@@ -31,18 +31,17 @@ net session >nul 2>&1
 if !errorlevel! neq 0 (
     echo   [X] 当前不是管理员权限运行
     echo.
-    set /p ADMIN_CHOICE="   自动提升为管理员? [Y/N](推荐Y): "
+    set /p ADMIN_CHOICE="   是否提升为管理员? [Y/N]（推荐 Y）: "
     if /i "!ADMIN_CHOICE!"=="" set ADMIN_CHOICE=Y
     if /i "!ADMIN_CHOICE!"=="Y" (
-        echo   正在请求管理员权限,请在UAC弹窗中点"是"...
-        powershell -Command "Start-Process cmd -ArgumentList '/k cd /d \"%~dp0\" && \"%~f0\"' -Verb RunAs"
+        echo   正在提权，请在弹出的 UAC 窗口点 [是]...
+        powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/k cd /d \"%~dp0\" && \"%~f0\"'"
         exit /b 0
     )
-    echo   将以普通权限继续。
+    echo   将以普通权限继续（部分安装可能失败）。
     echo.
-) else (
-    echo   [OK] 管理员权限: 已获取
 )
+echo   [OK] 管理员权限: 已获取
 
 set "ARCH=x64"
 if "%PROCESSOR_ARCHITECTURE%"=="ARM64" set "ARCH=arm64"
@@ -170,20 +169,22 @@ echo !SEP2!
 echo   配置 npm
 echo !SEP2!
 
+REM 优先用 Node.js 安装路径的绝对路径（避免 PATH 找到损坏的 npm）
 set "NPM_CMD="
-where npm >nul 2>&1 && set "NPM_CMD=npm"
-if "!NPM_CMD!"=="" (
-    if exist "C:\Program Files\nodejs\npm.cmd" set "NPM_CMD=C:\Program Files\nodejs\npm.cmd"
-)
-if "!NPM_CMD!"=="" (
-    if exist "%ProgramFiles%\nodejs\npm.cmd" set "NPM_CMD=%ProgramFiles%\nodejs\npm.cmd"
-)
-if "!NPM_CMD!"=="" (
-    if exist "D:\nodejs\node_global\npm.cmd" set "NPM_CMD=D:\nodejs\node_global\npm.cmd"
-)
+if exist "C:\Program Files\nodejs\npm.cmd" set "NPM_CMD=C:\Program Files\nodejs\npm.cmd"
+if "!NPM_CMD!"=="" if exist "%ProgramFiles%\nodejs\npm.cmd" set "NPM_CMD=%ProgramFiles%\nodejs\npm.cmd"
+if "!NPM_CMD!"=="" if exist "D:\nodejs\node_global\npm.cmd" set "NPM_CMD=D:\nodejs\node_global\npm.cmd"
+if "!NPM_CMD!"=="" where npm >nul 2>&1 && set "NPM_CMD=npm"
 if "!NPM_CMD!"=="" (
     echo   [失败] 找不到npm。
     echo   请重新安装Node.js: https://nodejs.org/zh-cn/download/
+    pause
+    exit /b 1
+)
+REM 验证 npm 可用
+call "!NPM_CMD!" -v >nul 2>&1
+if !errorlevel! neq 0 (
+    echo   [失败] npm 不可用。请重新安装 Node.js。
     pause
     exit /b 1
 )
@@ -312,7 +313,11 @@ if defined VSCODE_LATEST echo   最新稳定版: !VSCODE_LATEST!
 
 where code >nul 2>&1
 if !errorlevel! equ 0 (
-    for /f "tokens=1" %%i in ('code --version 2^>^&1') do set "INSTALLED_VSCODE=%%i"
+    for /f "tokens=1" %%i in ('code --version 2^>^&1') do (
+        set "INSTALLED_VSCODE=%%i"
+        goto :got_vscode_version
+    )
+    :got_vscode_version
     echo   已安装:   !INSTALLED_VSCODE!
 
     if defined VSCODE_LATEST (
@@ -548,10 +553,6 @@ echo     claude --update     更新到最新版
 echo     code .              在当前目录打开VS Code
 echo.
 echo   VS Code用户: 扩展市场搜索 Claude Code
-echo.
-echo !SEP1!
-echo   安装已完成！
-echo !SEP1!
 echo.
 echo   使用指南请查看: Claude-Code-使用指南.md
 echo   如需清理安装文件，请运行: 清理安装文件.bat
