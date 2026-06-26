@@ -33,9 +33,22 @@ if (-not $isAdmin) {
     if ($choice -eq "" -or $choice -eq "Y" -or $choice -eq "y") {
         Write-Host "   正在请求管理员权限，请在弹出的 UAC 窗口点击 [是]..."
         if ($PSCommandPath) {
+            # 本地文件执行：直接提权重新运行
             Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
         } else {
-            Start-Process powershell -Verb RunAs
+            # 远程执行（irm | iex）：保存到临时文件后提权运行
+            $tempScript = "$env:TEMP\install-claude-code.ps1"
+            $remoteUrl = "https://raw.githubusercontent.com/Ryan806911655/ScriptProject/main/安装ClaudeCode/install-claude-code.ps1"
+            Write-Host "   正在准备提权..."
+            try {
+                Invoke-RestMethod -Uri $remoteUrl -TimeoutSec 15 | Set-Content -Path $tempScript -Encoding UTF8
+                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
+            }
+            catch {
+                Write-Host "   [失败] 无法下载脚本进行提权: $_" -ForegroundColor Red
+                Write-Host "   将以普通权限继续（部分安装可能失败）。"
+                Read-Host "   按回车继续"
+            }
         }
         exit 0
     }
