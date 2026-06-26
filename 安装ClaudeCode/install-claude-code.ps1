@@ -1,4 +1,5 @@
 #Requires -Version 5.1
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $host.UI.RawUI.WindowTitle = "Claude Code 一键安装"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
