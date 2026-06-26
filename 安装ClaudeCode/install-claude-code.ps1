@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 $host.UI.RawUI.WindowTitle = "Claude Code 一键安装"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
