@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API 支持</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 800px; min-height: 800px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #141e30 0%, #243b55 100%);
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  color: #fff;
+  padding: 40px;
+}
+.container { width: 100%; max-width: 680px; }
+.section-title {
+  font-size: 36px; font-weight: 900; text-align: center;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sub { text-align: center; font-size: 17px; color: #aaa; margin-bottom: 32px; }
+
+.provider {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px; padding: 28px 32px;
+  margin-bottom: 18px;
+  position: relative; overflow: hidden;
+}
+.provider::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.provider.ds::before { background: linear-gradient(to bottom, #536dfe, #8c9eff); }
+.provider.an::before { background: linear-gradient(to bottom, #d4a574, #c68e5b); }
+.provider.other::before { background: linear-gradient(to bottom, #43e97b, #38f9d7); }
+
+.provider-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.provider-icon { font-size: 40px; }
+.provider-name { font-size: 24px; font-weight: 700; }
+.provider-badge {
+  font-size: 13px; padding: 4px 14px; border-radius: 12px;
+  font-weight: 600;
+}
+.badge-ds { background: rgba(83,109,254,0.3); color: #8c9eff; }
+.badge-an { background: rgba(212,167,116,0.3); color: #d4a574; }
+.badge-other { background: rgba(67,233,123,0.3); color: #38f9d7; }
+
+.provider-features { display: flex; flex-wrap: wrap; gap: 10px; }
+.pf {
+  font-size: 14px; background: rgba(255,255,255,0.06);
+  border-radius: 8px; padding: 6px 14px; color: #bbb;
+}
+.pf .hl { color: #ffd200; font-weight: 600; }
+
+.price-box {
+  margin-top: 24px;
+  background: linear-gradient(135deg, rgba(247,151,30,0.1), rgba(255,210,0,0.1));
+  border: 1px solid rgba(255,210,0,0.25);
+  border-radius: 14px; padding: 20px 28px;
+  text-align: center;
+  font-size: 17px; line-height: 1.8;
+}
+.price-box strong { color: #ffd200; font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="section-title">🔌 支持多种 API 接入</div>
+  <div class="sub">根据你的需求和预算，选最合适的方案</div>
+
+  <div class="provider ds">
+    <div class="provider-header">
+      <span class="provider-icon">🇨🇳</span>
+      <span class="provider-name">DeepSeek</span>
+      <span class="provider-badge badge-ds">国内推荐</span>
+    </div>
+    <div class="provider-features">
+      <span class="pf">💰 写代码约 <span class="hl">¥0.44/百万字</span></span>
+      <span class="pf">🚀 国内直连，无需梯子</span>
+      <span class="pf">💳 最低充值 <span class="hl">10元</span> 起</span>
+      <span class="pf">🔑 注册即用</span>
+    </div>
+  </div>
+
+  <div class="provider an">
+    <div class="provider-header">
+      <span class="provider-icon">🇺🇸</span>
+      <span class="provider-name">Anthropic 官方</span>
+      <span class="provider-badge badge-an">原厂体验</span>
+    </div>
+    <div class="provider-features">
+      <span class="pf">✨ 原生体验，功能最全</span>
+      <span class="pf">🔐 OAuth 一键登录</span>
+      <span class="pf">🔑 或 API Key 接入</span>
+      <span class="pf">📦 最新模型第一时间可用</span>
+    </div>
+  </div>
+
+  <div class="provider other">
+    <div class="provider-header">
+      <span class="provider-icon">🔌</span>
+      <span class="provider-name">其他第三方</span>
+      <span class="provider-badge badge-other">灵活扩展</span>
+    </div>
+    <div class="provider-features">
+      <span class="pf">🌐 支持任意 Anthropic 兼容接口</span>
+      <span class="pf">🔄 OpenRouter / 中转站 / 自定义</span>
+      <span class="pf">⚙️ 可自定义模型映射</span>
+    </div>
+  </div>
+
+  <div class="price-box">
+    💡 <strong>使用成本极低</strong><br>
+    DeepSeek 日常写代码一个月也就 <strong>几块钱</strong>，比奶茶还便宜
+  </div>
+</div>
+</body>
+</html>

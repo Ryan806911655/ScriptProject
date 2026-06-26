@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安装流程</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 800px; min-height: 800px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #0d1b2a 0%, #1b2838 50%, #1a1a2e 100%);
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  color: #fff;
+  padding: 40px;
+}
+.container { width: 100%; max-width: 680px; }
+.section-title {
+  font-size: 36px; font-weight: 900; text-align: center;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sub { text-align: center; font-size: 17px; color: #aaa; margin-bottom: 36px; }
+
+.steps { display: flex; flex-direction: column; gap: 0; }
+.step {
+  display: flex; align-items: flex-start; gap: 20px;
+  position: relative;
+}
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute; left: 28px; top: 62px;
+  width: 2px; height: calc(100% - 10px);
+  background: linear-gradient(to bottom, #43e97b, #38f9d7);
+  opacity: 0.5;
+}
+.step-num {
+  width: 58px; height: 58px; min-width: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 900; color: #0d1b2a;
+  position: relative; z-index: 1;
+}
+.step-body { padding-bottom: 32px; }
+.step-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.step-detail { font-size: 15px; color: #aaa; line-height: 1.6; }
+.step-items {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+}
+.step-tag {
+  background: rgba(67,233,123,0.15);
+  border: 1px solid rgba(67,233,123,0.25);
+  border-radius: 6px; padding: 4px 12px;
+  font-size: 13px; color: #38f9d7;
+}
+.promise {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 20px 28px;
+  text-align: center; font-size: 17px; line-height: 1.8;
+}
+.promise strong { color: #43e97b; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="section-title">📋 安装服务流程</div>
+  <div class="sub">你只需要：打开电脑 + 联网，剩下的交给我</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">①</div>
+      <div class="step-body">
+        <div class="step-title">你拍下，发我远程码</div>
+        <div class="step-detail">打开向日葵/ToDesk → 把识别码和验证码发我</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">②</div>
+      <div class="step-body">
+        <div class="step-title">我远程连上，开始安装</div>
+        <div class="step-detail">一键脚本自动安装，你可以看着屏幕全程监控</div>
+        <div class="step-items">
+          <span class="step-tag">Node.js</span>
+          <span class="step-tag">Git</span>
+          <span class="step-tag">VS Code</span>
+          <span class="step-tag">Claude Code</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">③</div>
+      <div class="step-body">
+        <div class="step-title">配置 API Key</div>
+        <div class="step-detail">帮你注册 DeepSeek → 创建 Key → 写入环境变量 → 自动识别可用模型</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">④</div>
+      <div class="step-body">
+        <div class="step-title">验证 + 交付</div>
+        <div class="step-detail">打开终端输入 claude → 进入对话 → 确认一切正常 → 发你使用指南</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="promise">
+    ⏱️ 全程 <strong>5~10 分钟</strong> &nbsp;|&nbsp;
+    🔒 全程录屏透明 &nbsp;|&nbsp;
+    🚫 不碰个人文件 &nbsp;|&nbsp;
+    ⭐ <strong>装不好全额退款</strong>
+  </div>
+</div>
+</body>
+</html>
