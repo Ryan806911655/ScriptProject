@@ -16,13 +16,13 @@ echo     * install-claude-code.bat
 echo     * install-claude-code.sh
 echo     * install-claude-code.command
 echo     * 双击安装.bat
-echo     * 清理安装文件.bat （本脚本）
+echo     * clear.sh
+echo     * clear.bat （本脚本）
 echo.
 echo   以下文件会保留:
 echo.
 echo     * Claude-Code-使用指南.md
 echo     * 手动安装教程.md
-echo     * 远程安装命令.md
 echo.
 echo ============================================
 echo   ⚠ 删除后无法恢复！请确认已安装完成。
@@ -39,6 +39,8 @@ if /i "%CONFIRM%"=="Y" (
     del /f /q "%~dp0install-claude-code.sh"      2>nul
     del /f /q "%~dp0install-claude-code.command" 2>nul
     del /f /q "%~dp0双击安装.bat"                 2>nul
+    del /f /q "%~dp0clear.sh"             2>nul
+    del /f /q "%~dp0clear.bat"             2>nul
 
     echo   [完成] 安装脚本已删除，教程文件已保留。
     echo.

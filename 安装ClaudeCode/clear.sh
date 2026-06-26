@@ -16,8 +16,8 @@ echo "     * install-claude-code.bat"
 echo "     * install-claude-code.sh"
 echo "     * install-claude-code.command"
 echo "     * 双击安装.bat"
-echo "     * 清理安装文件.bat"
-echo "     * 清理安装文件.sh （本脚本）"
+echo "     * clear.bat"
+echo "     * clear.sh （本脚本）"
 echo ""
 echo "   以下文件会保留:"
 echo ""
@@ -43,7 +43,8 @@ if [ "$confirm" = "Y" ] || [ "$confirm" = "y" ]; then
     rm -f "$SCRIPT_DIR/install-claude-code.sh"      2>/dev/null
     rm -f "$SCRIPT_DIR/install-claude-code.command" 2>/dev/null
     rm -f "$SCRIPT_DIR/双击安装.bat"                 2>/dev/null
-    rm -f "$SCRIPT_DIR/清理安装文件.bat"             2>/dev/null
+    rm -f "$SCRIPT_DIR/clear.sh"             2>/dev/null
+    rm -f "$SCRIPT_DIR/clear.bat"             2>/dev/null
 
     echo "   [完成] 安装脚本已删除，教程文件已保留。"
     echo ""
