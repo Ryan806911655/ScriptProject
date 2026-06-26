@@ -34,28 +34,27 @@ if (-not $isAdmin) {
         Write-Host "   正在请求管理员权限，请在弹出的 UAC 窗口点击 [是]..."
         if ($PSCommandPath) {
             # 本地文件执行：直接提权重新运行
-            Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+            Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -NoExit -ExecutionPolicy Bypass -File `"$PSCommandPath`""
         } else {
-            # 远程执行：用纯 ASCII 启动器脚本 + iwr 重新下载（避开 irm 502 和 BOM 问题）
+            # 远程执行：iwr 下载 → 写入无 BOM 临时文件 → 提权 File 运行
             $remoteUrl = "https://raw.githubusercontent.com/Ryan806911655/ScriptProject/main/安装ClaudeCode/install-claude-code.ps1"
-            $tempLauncher = "$env:TEMP\cc-install.ps1"
+            $tempScript = "$env:TEMP\cc-install.ps1"
             Write-Host "   正在准备提权..."
             try {
-                # 写入纯 ASCII 启动器（无 BOM、无中文、无编码坑）
-                $launcherCode = @"
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-`$url = '$remoteUrl'
-try {
-    `$s = (Invoke-WebRequest `$url -UseBasicParsing -TimeoutSec 30).Content
-    Invoke-Expression `$s
-} catch {
-    Write-Host "`$([char]0x26A0) Download failed: `$_"
-    Write-Host "URL: `$url"
-    Read-Host "Press Enter to close"
-}
-"@
-                [System.IO.File]::WriteAllText($tempLauncher, $launcherCode)
-                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempLauncher`""
+                # 用 iwr 下载（不是 irm，避免 502）
+                $content = (Invoke-WebRequest $remoteUrl -UseBasicParsing -TimeoutSec 30).Content
+                if (-not $content -or $content.Length -lt 500) {
+                    throw "下载内容异常，长度: $($content.Length)"
+                }
+                # 用 .NET 写入 UTF-8 无 BOM
+                [System.IO.File]::WriteAllText($tempScript, $content, (New-Object System.Text.UTF8Encoding $false))
+                # 验证写入成功
+                $testContent = Get-Content $tempScript -Raw
+                if ($testContent.Length -lt 500) {
+                    throw "临时文件写入异常，长度: $($testContent.Length)"
+                }
+                Write-Host "   [OK] 临时文件已准备: $tempScript ($($testContent.Length) 字符)"
+                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -NoExit -ExecutionPolicy Bypass -File `"$tempScript`""
             }
             catch {
                 Write-Host "   [失败] 提权失败: $_" -ForegroundColor Red
