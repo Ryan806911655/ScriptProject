@@ -36,18 +36,17 @@ if (-not $isAdmin) {
             # 本地文件执行：直接提权重新运行
             Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
         } else {
-            # 远程执行（irm | iex）：保存到临时文件后提权运行
-            $tempScript = "$env:TEMP\install-claude-code.ps1"
+            # 远程执行：把下载命令编码后传给提权窗口（避免写文件 + 编码问题）
             $remoteUrl = "https://raw.githubusercontent.com/Ryan806911655/ScriptProject/main/安装ClaudeCode/install-claude-code.ps1"
             Write-Host "   正在准备提权..."
             try {
-                $scriptContent = Invoke-RestMethod -Uri $remoteUrl -TimeoutSec 15
-                # 用 .NET 写入 UTF-8 无 BOM（避免 Set-Content 加 BOM 导致 #Requires 报错）
-                [System.IO.File]::WriteAllText($tempScript, $scriptContent, (New-Object System.Text.UTF8Encoding $false))
-                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempScript`""
+                $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes(
+                    "iex ((iwr '$remoteUrl' -UseBasicParsing).Content)"
+                ))
+                Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded"
             }
             catch {
-                Write-Host "   [失败] 无法下载脚本进行提权: $_" -ForegroundColor Red
+                Write-Host "   [失败] 提权失败: $_" -ForegroundColor Red
                 Write-Host "   将以普通权限继续（部分安装可能失败）。"
                 Read-Host "   按回车继续"
             }
