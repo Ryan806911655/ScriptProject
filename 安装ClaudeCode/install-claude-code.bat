@@ -35,7 +35,7 @@ if !errorlevel! neq 0 (
     if /i "!ADMIN_CHOICE!"=="" set ADMIN_CHOICE=Y
     if /i "!ADMIN_CHOICE!"=="Y" (
         echo   正在提权，请在弹出的 UAC 窗口点 [是]...
-        powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/k cd /d \"%~dp0\" && \"%~f0\"'"
+        powershell -Command "Start-Process '%~f0' -Verb RunAs -WorkingDirectory '%~dp0'"
         exit /b 0
     )
     echo   将以普通权限继续（部分安装可能失败）。
@@ -376,7 +376,7 @@ powershell -Command "try { Invoke-WebRequest -Uri '%VSCODE_URL%' -OutFile '%VSCO
 
 if exist "%VSCODE_INSTALLER%" (
     echo   正在安装(静默模式)...
-    "%VSCODE_INSTALLER%" /VERYSILENT /MERGETASKS=!runcode,addcontextmenufiles,addcontextmenufolders,addtopath
+    "%VSCODE_INSTALLER%" /VERYSILENT /MERGETASKS=^^!runcode,addcontextmenufiles,addcontextmenufolders,addtopath
     del "%VSCODE_INSTALLER%" 2>nul
     call :refresh_path
     echo   [OK] VS Code安装成功
